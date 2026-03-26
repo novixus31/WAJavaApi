@@ -1,0 +1,228 @@
+syntax = "proto2";
+
+package proto;
+
+option java_package = "com.chatin.whatsapp.proto";
+option java_outer_classname = "WAProto";
+option java_multiple_files = false;
+
+// =========== Handshake Messages ===========
+
+message HandshakeMessage {
+    optional ClientHello clientHello = 2;
+    optional ServerHello serverHello = 3;
+    optional ClientFinish clientFinish = 4;
+}
+
+message ClientHello {
+    optional bytes ephemeral = 1;
+}
+
+message ServerHello {
+    optional bytes ephemeral = 1;
+    optional bytes staticData = 2;
+    optional bytes payload = 3;
+}
+
+message ClientFinish {
+    optional bytes staticData = 2;
+    optional bytes payload = 3;
+}
+
+// =========== Client Payload (sent inside ClientFinish.payload) ===========
+
+message ClientPayload {
+    optional uint64 username = 1;
+    optional bool passive = 3;
+    optional UserAgent userAgent = 5;
+    optional WebInfo webInfo = 6;
+    optional string pushName = 7;
+    optional sfixed32 sessionId = 9;
+    optional bool shortConnect = 10;
+    optional CompanionRegData regData = 13;
+    optional ConnectType connectType = 16;
+    optional ConnectReason connectReason = 17;
+
+    enum ConnectType {
+        CELLULAR_UNKNOWN = 0;
+        WIFI_UNKNOWN = 1;
+        CELLULAR_EDGE = 100;
+        CELLULAR_IDEN = 101;
+        CELLULAR_UMTS = 102;
+        CELLULAR_EVDO = 103;
+        CELLULAR_GPRS = 104;
+        CELLULAR_HSDPA = 105;
+        CELLULAR_HSUPA = 106;
+        CELLULAR_HSPA = 107;
+        CELLULAR_CDMA = 108;
+        CELLULAR_1XRTT = 109;
+        CELLULAR_EHRPD = 110;
+        CELLULAR_LTE = 111;
+        CELLULAR_HSPAP = 112;
+    }
+
+    enum ConnectReason {
+        PUSH = 0;
+        USER_ACTIVATED = 1;
+        SCHEDULED = 2;
+        ERROR_RECONNECT = 3;
+        NETWORK_SWITCH = 4;
+        PING_RECONNECT = 5;
+    }
+}
+
+message CompanionRegData {
+    optional bytes eRegid = 1;
+    optional bytes eKeytype = 2;
+    optional bytes eIdent = 3;
+    optional bytes eSkeyId = 4;
+    optional bytes eSkeyVal = 5;
+    optional bytes eSkeySig = 6;
+    optional bytes buildHash = 7;
+    optional bytes companionProps = 8;
+}
+
+message CompanionProps {
+    optional string os = 1;
+    optional CompanionPropsPlatformType platformType = 2;
+
+    enum CompanionPropsPlatformType {
+        UNKNOWN = 0;
+        CHROME = 1;
+        FIREFOX = 2;
+        IE = 3;
+        OPERA = 4;
+        SAFARI = 5;
+        EDGE = 6;
+        DESKTOP = 7;
+        IPAD = 8;
+        ANDROID_TABLET = 9;
+        OHANA = 10;
+        ALOHA = 11;
+        CATALINA = 12;
+        TCL_TV = 13;
+    }
+}
+
+message UserAgent {
+    optional UserAgentPlatform platform = 1;
+    optional AppVersion appVersion = 5;
+    optional string mcc = 6;
+    optional string mnc = 7;
+    optional string osVersion = 8;
+    optional string manufacturer = 9;
+    optional string device = 10;
+    optional string osBuildNumber = 11;
+    optional string phoneId = 12;
+    optional UserAgentReleaseChannel releaseChannel = 13;
+    optional string localeLanguageIso6391 = 14;
+    optional string localeCountryIso31661Alpha2 = 15;
+    optional string deviceBoard = 16;
+
+    enum UserAgentPlatform {
+        ANDROID = 0;
+        IOS = 1;
+        WINDOWS_PHONE = 2;
+        BLACKBERRY = 3;
+        BLACKBERRY10 = 4;
+        S40 = 5;
+        S60 = 6;
+        PYTHON_CLIENT = 7;
+        TIZEN = 8;
+        ENTERPRISE = 9;
+        SMB_ANDROID = 10;
+        KAIOS = 11;
+        SMB_IOS = 12;
+        WINDOWS = 13;
+        WEB = 14;
+        PORTAL = 15;
+        GREEN_ANDROID = 16;
+        GREEN_IPHONE = 17;
+        BLUE_ANDROID = 18;
+        BLUE_IPHONE = 19;
+        FBLITE_ANDROID = 20;
+        MLITE_ANDROID = 21;
+        IGLITE_ANDROID = 22;
+        PAGE = 23;
+        MACOS = 24;
+        OCULUS_MSG = 25;
+        OCULUS_CALL = 26;
+        MILAN = 27;
+        CAPI = 28;
+        WEAROS = 29;
+        ARDEVICE = 30;
+        VRDEVICE = 31;
+        BLUE_WEB = 32;
+        IPAD = 33;
+    }
+
+    enum UserAgentReleaseChannel {
+        RELEASE = 0;
+        BETA = 1;
+        ALPHA = 2;
+        DEBUG = 3;
+    }
+}
+
+message AppVersion {
+    optional uint32 primary = 1;
+    optional uint32 secondary = 2;
+    optional uint32 tertiary = 3;
+    optional uint32 quaternary = 4;
+    optional uint32 quinary = 5;
+}
+
+message WebInfo {
+    optional string refToken = 1;
+    optional string version = 2;
+    optional WebInfoWebSubPlatform webSubPlatform = 3;
+
+    enum WebInfoWebSubPlatform {
+        WEB_BROWSER = 0;
+        APP_STORE = 1;
+        WIN_STORE = 2;
+        DARWIN = 3;
+        WIN32 = 4;
+    }
+}
+
+// =========== ADV (Account Device Verification) ===========
+
+message ADVSignedDeviceIdentity {
+    optional bytes details = 1;
+    optional bytes accountSignatureKey = 2;
+    optional bytes accountSignature = 3;
+    optional bytes deviceSignature = 4;
+}
+
+message ADVSignedKeyIndexList {
+    optional bytes details = 1;
+    optional bytes accountSignature = 2;
+}
+
+message ADVDeviceIdentity {
+    optional uint32 rawId = 1;
+    optional uint64 timestamp = 2;
+    optional uint32 keyIndex = 3;
+    optional ADVEncryptionType deviceType = 4;
+
+    enum ADVEncryptionType {
+        E2EE = 0;
+        HOSTED = 1;
+    }
+}
+
+// =========== NoiseCertificate ===========
+
+message NoiseCertificate {
+    optional bytes details = 1;
+    optional bytes signature = 2;
+
+    message Details {
+        optional uint32 serial = 1;
+        optional string issuer = 2;
+        optional uint64 expires = 3;
+        optional string subject = 4;
+        optional bytes key = 5;
+    }
+}

@@ -1,0 +1,25 @@
+server:
+  port: ${PORT:3001}
+
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/chatin}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:your-secret-key}
+    expiration-days: 7
+  cors:
+    allowed-origins: http://localhost:3000,https://chatin-nextjs.vercel.app,https://chatinexpressjs-production.up.railway.app,electron://app,file://,https://4n4jswct-3000.euw.devtunnels.ms
+  blob:
+    token: ${BLOB_READ_WRITE_TOKEN:}
+    environment: ${NODE_ENV:development}
+
+socketio:
+  port: ${SOCKETIO_PORT:9092}
+
+logging:
+  level:
+    com.chatin: DEBUG
+    org.springframework.data.mongodb: WARN
